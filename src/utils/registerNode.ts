@@ -1,4 +1,4 @@
-import LogicFlow from '@logicflow/core';
+import LogicFlow, { DiamondNodeModel } from '@logicflow/core';
 
 class CustomNode {
   lf: LogicFlow;
