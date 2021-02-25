@@ -1,4 +1,4 @@
-import { userData } from './userData';
+import { mockData } from './mockData';
 import { ACTION, NODE } from './constant';
 
 export const renderData = {
@@ -10,8 +10,9 @@ export const renderData = {
       y: 120,
       text: '申请',
       properties: {
-        hover: true,
-        ...userData.applicants[0],
+        configured: true,
+        applicantIndex: 0,
+        ...mockData.applicants[0],
         nodeType: NODE.APPLY
       }
     },
@@ -22,8 +23,9 @@ export const renderData = {
       y: 120,
       text: '审批',
       properties: {
-        hover: true,
-        ...userData.applicants[0],
+        configured: true,
+        managerIndex: 0,
+        ...mockData.managers[0],
         nodeType: NODE.APPROVAL
       }
     },
@@ -34,8 +36,7 @@ export const renderData = {
       y: 120,
       text: '报销金额\n是否大于1000元',
       properties: {
-        hover: true,
-        ...userData.applicants[0],
+        configured: true,
         nodeType: NODE.JUDGEMENT
       }
     },
@@ -46,8 +47,9 @@ export const renderData = {
       y: 120,
       text: '审批',
       properties: {
-        hover: true,
-        ...userData.applicants[0],
+        configured: true,
+        managerIndex: 1,
+        ...mockData.managers[1],
         nodeType: NODE.APPROVAL
       }
     },
@@ -58,8 +60,9 @@ export const renderData = {
       y: 120,
       text: '审批',
       properties: {
-        hover: true,
-        ...userData.applicants[0],
+        configured: true,
+        managerIndex: 2,
+        ...mockData.managers[2],
         nodeType: NODE.APPROVAL
       }
     },
@@ -70,7 +73,7 @@ export const renderData = {
       y: 120,
       text: '结束',
       properties: {
-        hover: true,
+        configured: true,
         nodeType: NODE.END
       }
     }

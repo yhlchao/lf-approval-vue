@@ -1,41 +1,62 @@
 <template>
   <div
     class="hover-card"
-    :class="{ 'show-hover-card': showHoverCard }"
+    :class="{ 'show-hover-card': showCard }"
     :style="{
-      transform: `translate(${hoverData.left - 130}px, ${hoverData.top}px)`
+      transform: `translate(${x - 130}px, ${y + 60}px)`
     }"
+    @mouseenter="hover = true"
+    @mouseleave="hover = false"
   >
     <div class="title">进度详情</div>
     <div class="main">
-      <div class="item"></div>
+      <HoverCardApply v-if="nodeData.type === 'apply'" :nodeData="nodeData" />
+      <HoverCardApproval
+        v-if="nodeData.type === 'approval'"
+        :nodeData="nodeData"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import HoverCardApply from './HoverCardApply.vue';
+import HoverCardApproval from './HoverCardApproval.vue';
+
 export default {
+  components: { HoverCardApply, HoverCardApproval },
   name: 'HoverCard',
   props: {
-    showHoverCard: {
+    show: {
       type: Boolean,
       default: false
     },
-    hoverData: {
-      type: Object,
-      default: function () {
-        return {
-          top: 0,
-          left: 0,
-          data: {}
-        };
-      }
+    x: {
+      type: Number,
+      default: 0
+    },
+    y: {
+      type: Number,
+      default: 0
+    },
+    nodeData: Object
+  },
+  data() {
+    return {
+      hover: false
+    };
+  },
+  computed: {
+    showCard() {
+      if (this.show) return true;
+      else if (this.hover) return true;
+      return false;
     }
   }
 };
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 .hover-card {
   position: absolute;
   top: 0;
@@ -44,7 +65,6 @@ export default {
   width: 260px;
   height: 200px;
   background-color: #fff;
-  transform: translateX(-50%);
   border-radius: 8px;
   box-shadow: $boxShadowShallow;
   display: flex;
@@ -62,6 +82,23 @@ export default {
     width: 100%;
     height: 100%;
     overflow-y: auto;
+    text-align: left;
+    padding: 15px;
+
+    .item {
+      margin-bottom: 6px;
+
+      .label,
+      .content {
+        display: inline-block;
+      }
+      .count {
+        font-weight: bold;
+      }
+    }
+    .item:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 

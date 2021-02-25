@@ -1,4 +1,4 @@
-export const userData = {
+export const mockData = {
   applicants: [
     {
       name: '张三',
@@ -26,16 +26,17 @@ export const userData = {
     {
       name: '李四',
       id: 'D2001',
-      level: 'D2',
-      time: '2021-1-2',
-      result: 1
+      level: 'D2'
     },
     {
       name: '王五',
       id: 'D3001',
-      level: 'D3',
-      time: '2021-1-3',
-      result: 0
+      level: 'D3'
+    },
+    {
+      name: '赵六',
+      id: 'D4001',
+      level: 'D4'
     }
   ]
 };

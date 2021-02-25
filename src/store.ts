@@ -15,7 +15,7 @@ const store = createStore({
   },
   mutations: {
     initLogicFlow(state: State, container) {
-      const baseColor = '#55616d';
+      const baseColor = '#9cafb9';
       const lf = new LogicFlow({
         container,
         grid: {

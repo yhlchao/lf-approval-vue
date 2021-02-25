@@ -5,8 +5,13 @@
       <Panel :startDrag="startDrag" />
       <div id="graph"></div>
     </div>
-    <HoverCard :show="showHoverCard" :hoverData="hoverData" />
-    <Workbench :show="showWorkbench" :nodeData="workbenchData" />
+    <HoverCard
+      :show="showHoverCard"
+      :nodeData="hoverNodeData"
+      :x="hoverPosition.x"
+      :y="hoverPosition.y"
+    />
+    <Workbench :show="showWorkbench" :nodeData="nodeData" />
   </div>
 </template>
 
@@ -36,13 +41,11 @@ export default {
     return {
       showHoverCard: false,
       showWorkbench: false,
-      hoverData: {
-        top: 0,
-        left: 0,
-        data: {}
-      },
-      workbenchData: {
-        properties: {}
+      nodeData: {},
+      hoverNodeData: {},
+      hoverPosition: {
+        x: 0,
+        y: 0
       }
     };
   },
@@ -62,26 +65,23 @@ export default {
     addHoverListener() {
       this.lf.on('node:mouseenter', ({ data, e }) => {
         const { properties } = data;
-        if (!properties.hover) return;
+        if (!properties.configured) return;
         this.showHoverCard = true;
-        this.hoverData = {
-          data,
-          left: e.x,
-          top: e.y + 30
+        this.hoverNodeData = data;
+        this.hoverPosition = {
+          x: e.x,
+          y: e.y
         };
       });
       this.lf.on('node:mouseleave', () => {
         this.showHoverCard = false;
       });
       this.lf.on('node:mousedown', () => {
-        this.hoverData = {
-          ...this.hoverData,
-          show: false
-        };
+        this.showHoverCard = false;
       });
       this.lf.on('node:click', ({ data }) => {
+        this.nodeData = data;
         this.showWorkbench = true;
-        this.workbenchData = data;
       });
       this.lf.on('blank:click', () => {
         this.showWorkbench = false;

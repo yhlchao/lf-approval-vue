@@ -5,44 +5,72 @@
       <div class="item">
         <div class="label">节点类型：</div>
         <div class="content">
-          {{ nodeData.properties.nodeType + `（${nodeData.type}）` }}
+          {{ nodeData.properties?.nodeType + `（${nodeData.type}）` }}
         </div>
       </div>
-      <ApplyItem
+      <WorkbenchApply
         v-if="nodeData.type === 'apply'"
         :selectBlur="show"
-        @submit="applyNodeData = $event"
+        :applicantIndex="nodeData.properties.applicantIndex"
+        @change="handleChange"
       />
+      <WorkbenchApproval
+        v-if="nodeData.type === 'approval'"
+        :selectBlur="show"
+        :managerIndex="nodeData.properties.managerIndex"
+        @change="handleChange"
+      />
+      <el-button type="primary" @click="handleSubmit">完成</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import ApplyItem from './ApplyItem.vue';
+import { ElMessage } from 'element-plus';
+import { mapState } from 'vuex';
+import WorkbenchApply from './WorkbenchApply.vue';
+import WorkbenchApproval from './WorkbenchApproval.vue';
+import { mockData } from '@/utils/lib/mockData';
+
 export default {
-  components: { ApplyItem },
+  components: { WorkbenchApply, WorkbenchApproval },
   name: 'Workbench',
   props: {
-    show: Boolean,
-    nodeData: {
-      type: Object,
-      default: function () {
-        return {
-          properties: {
-            nodeType: '未知'
-          }
-        };
-      }
-    }
+    show: {
+      type: Boolean,
+      default: false
+    },
+    nodeData: Object
   },
   data() {
     return {
-      applyNodeData: null
+      mockDataIndex: -1
     };
   },
-  watch: {
-    // applyNodeData(value) {
-    // }
+  computed: mapState(['lf']),
+  methods: {
+    handleChange($event) {
+      this.mockDataIndex = $event;
+    },
+    handleSubmit() {
+      if (this.mockDataIndex < 0) ElMessage.warning('请选择一组申请示例！');
+      let newProperties;
+      if (this.nodeData.type === 'apply') {
+        newProperties = {
+          ...mockData.applicants[this.mockDataIndex]
+        };
+      } else if (this.nodeData.type === 'approval') {
+        newProperties = {
+          ...mockData.managers[this.mockDataIndex]
+        };
+      }
+      this.lf.setProperties(this.nodeData.id, {
+        configured: true,
+        ...this.nodeData.properties,
+        ...newProperties
+      });
+      ElMessage.success('配置成功！');
+    }
   }
 };
 </script>
@@ -78,9 +106,6 @@ export default {
       .content {
         display: inline-block;
         padding: 2px 0 2px 6px;
-      }
-      .label {
-        // background-color: #c1e0ff;
       }
     }
   }

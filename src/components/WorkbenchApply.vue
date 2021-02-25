@@ -2,7 +2,7 @@
   <div class="item">
     <div class="label">申请组别：</div>
     <div class="content">
-      <el-select v-model="valueIndex" placeholder="请选择" ref="select">
+      <el-select v-model="itemIndex" placeholder="请选择" ref="select">
         <el-option
           v-for="(item, index) in items"
           :key="item"
@@ -12,33 +12,31 @@
       </el-select>
     </div>
   </div>
-  <el-button type="primary" @click="handleSubmit">完成</el-button>
 </template>
 
 <script>
-import { userData } from '@/utils/lib/userData';
+import { mockData } from '@/utils/lib/mockData';
 
 export default {
-  name: 'ApplyItem',
+  name: 'WorkbenchApply',
   props: {
-    selectBlur: Boolean
+    selectBlur: Boolean,
+    applicantIndex: Number
   },
   data() {
     return {
-      items: userData.applicants,
-      valueIndex: ''
+      items: mockData.applicants,
+      itemIndex: this.applicantIndex
     };
   },
   watch: {
     selectBlur(value) {
       if (!value) this.$refs.select.blur();
+    },
+    itemIndex(value) {
+      this.$emit('change', value);
     }
   },
-  methods: {
-    handleSubmit() {
-      this.$emit('submit', this.items[this.valueIndex]);
-    }
-  }
 };
 </script>
 

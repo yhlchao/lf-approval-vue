@@ -18,7 +18,14 @@ class CustomNode {
   // 申请节点
   registerApply() {
     this.lf.register('apply', ({ CircleNode, CircleNodeModel, h }) => {
-      class View extends CircleNode {}
+      class View extends CircleNode {
+        getAttributes() {
+          const attrs: any = super.getAttributes();
+          const { properties } = attrs;
+          if (properties.configured) attrs.stroke = '#434c56';
+          return attrs;
+        }
+      }
       class Model extends CircleNodeModel {
         getConnectedTargetRules() {
           const rules = super.getConnectedTargetRules();
@@ -40,7 +47,14 @@ class CustomNode {
   // 结束节点
   registerEnd() {
     this.lf.register('end', ({ CircleNode, CircleNodeModel }) => {
-      class View extends CircleNode {}
+      class View extends CircleNode {
+        getAttributes() {
+          const attrs: any = super.getAttributes();
+          const { properties } = attrs;
+          if (properties.configured) attrs.stroke = '#434c56';
+          return attrs;
+        }
+      }
       class Model extends CircleNodeModel {
         getConnectedSourceRules() {
           const rules = super.getConnectedSourceRules();
@@ -62,7 +76,14 @@ class CustomNode {
   // 审批节点
   registerApproval() {
     this.lf.register('approval', ({ RectNode, RectNodeModel }) => {
-      class View extends RectNode {}
+      class View extends RectNode {
+        getAttributes() {
+          const attrs: any = super.getAttributes();
+          const { properties } = attrs;
+          if (properties.configured) attrs.stroke = '#434c56';
+          return attrs;
+        }
+      }
       class Model extends RectNodeModel {}
       return {
         view: View,
@@ -74,7 +95,14 @@ class CustomNode {
   // 判断节点
   registerJudgement() {
     this.lf.register('judgement', ({ DiamondNode, DiamondNodeModel }) => {
-      class View extends DiamondNode {}
+      class View extends DiamondNode {
+        getAttributes() {
+          const attrs: any = super.getAttributes();
+          const { properties } = attrs;
+          if (properties.configured) attrs.stroke = '#434c56';
+          return attrs;
+        }
+      }
       class Model extends DiamondNodeModel {}
       return {
         view: View,
