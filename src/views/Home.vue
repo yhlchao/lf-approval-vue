@@ -5,8 +5,8 @@
       <Panel :startDrag="startDrag" />
       <div id="graph"></div>
     </div>
-    <HoverCard :hoverData="hoverData" />
-    <Workbench :show="showWorkbench" :data="workbenchData" />
+    <HoverCard :show="showHoverCard" :hoverData="hoverData" />
+    <Workbench :show="showWorkbench" :nodeData="workbenchData" />
   </div>
 </template>
 
@@ -19,9 +19,8 @@ import '@logicflow/extension/lib/style/index.css';
 import Panel from '../components/Panel';
 import HoverCard from '../components/HoverCard';
 import Workbench from '../components/Workbench';
-import CustomNode from '../utils/registerNode';
-import CustomEdge from '../utils/registerEdge';
-import { renderData } from '../utils/lib/renderData';
+import { renderData } from '@/utils/lib/renderData';
+import { mapMutations, mapState } from 'vuex';
 
 LogicFlow.use(Control);
 LogicFlow.use(Menu);
@@ -35,83 +34,44 @@ export default {
   },
   data() {
     return {
-      lf: null,
+      showHoverCard: false,
+      showWorkbench: false,
       hoverData: {
-        show: false,
         top: 0,
         left: 0,
         data: {}
       },
-      showWorkbench: false,
       workbenchData: {
         properties: {}
       }
     };
   },
+  computed: mapState(['lf']),
   mounted() {
-    this.initLogicFLow();
+    const container = document.querySelector('#graph');
+    this.initLogicFlow(container);
     this.addHoverListener();
+    this.lf.render(renderData);
   },
   methods: {
-    initLogicFLow() {
-      const baseColor = '#55616d';
-      this.lf = new LogicFlow({
-        container: document.querySelector('#graph'),
-        grid: {
-          size: 10,
-          type: 'mesh'
-        },
-        background: {
-          color: '#fff'
-        },
-        style: {
-          rect: {
-            radius: 8,
-            stroke: baseColor
-          },
-          circle: {
-            r: 30,
-            stroke: baseColor
-          },
-          diamond: {
-            stroke: baseColor
-          },
-          polyline: {
-            stroke: baseColor,
-            outlineStrokeDashArray: '0,1'
-          },
-          edgeText: {
-            background: {
-              fill: '#fff'
-            }
-          }
-        }
-      });
-      const customNode = new CustomNode(this.lf);
-      const customEdge = new CustomEdge(this.lf);
-      customNode.registerAll();
-      customEdge.registerAll();
-      this.lf.render(renderData);
-    },
+    ...mapMutations(['initLogicFlow']),
     startDrag(config) {
-      this.lf.dnd.startDrag(config);
+      const { lf } = this.$store.state;
+      lf.dnd.startDrag(config);
     },
     addHoverListener() {
       this.lf.on('node:mouseenter', ({ data, e }) => {
         const { properties } = data;
         if (!properties.hover) return;
+        this.showHoverCard = true;
         this.hoverData = {
-          show: true,
-          top: e.y + 30,
+          data,
           left: e.x,
-          data
+          top: e.y + 30
         };
       });
       this.lf.on('node:mouseleave', () => {
-        this.hoverData = {
-          ...this.hoverData,
-          show: false
-        };
+        this.showHoverCard = false;
       });
       this.lf.on('node:mousedown', () => {
         this.hoverData = {

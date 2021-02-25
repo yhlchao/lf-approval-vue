@@ -4,9 +4,15 @@
     <div class="main">
       <div class="item">
         <div class="label">节点类型：</div>
-        <div class="content">{{ data.properties.nodeType + `（${data.type}）`}}</div>
+        <div class="content">
+          {{ nodeData.properties.nodeType + `（${nodeData.type}）` }}
+        </div>
       </div>
-      <ApplyItem />
+      <ApplyItem
+        v-if="nodeData.type === 'apply'"
+        :selectBlur="show"
+        @submit="applyNodeData = $event"
+      />
     </div>
   </div>
 </template>
@@ -18,7 +24,7 @@ export default {
   name: 'Workbench',
   props: {
     show: Boolean,
-    data: {
+    nodeData: {
       type: Object,
       default: function () {
         return {
@@ -28,6 +34,15 @@ export default {
         };
       }
     }
+  },
+  data() {
+    return {
+      applyNodeData: null
+    };
+  },
+  watch: {
+    // applyNodeData(value) {
+    // }
   }
 };
 </script>

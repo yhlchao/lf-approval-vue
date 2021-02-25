@@ -1,8 +1,10 @@
 <template>
   <div
     class="hover-card"
-    :class="{ 'show-hover-card': hoverData.show }"
-    :style="{ top: hoverData.top + 'px', left: hoverData.left + 'px' }"
+    :class="{ 'show-hover-card': showHoverCard }"
+    :style="{
+      transform: `translate(${hoverData.left - 130}px, ${hoverData.top}px)`
+    }"
   >
     <div class="title">进度详情</div>
     <div class="main">
@@ -15,11 +17,14 @@
 export default {
   name: 'HoverCard',
   props: {
+    showHoverCard: {
+      type: Boolean,
+      default: false
+    },
     hoverData: {
       type: Object,
       default: function () {
         return {
-          show: false,
           top: 0,
           left: 0,
           data: {}
