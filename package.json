@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "deploy": "git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "@logicflow/core": "^0.2.4",
