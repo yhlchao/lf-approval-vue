@@ -73,7 +73,7 @@ export const renderData = {
       y: 120,
       text: '结束',
       properties: {
-        configured: true,
+        needConfig: false,
         nodeType: NODE.END
       }
     }

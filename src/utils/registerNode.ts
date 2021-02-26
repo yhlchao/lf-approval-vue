@@ -75,13 +75,24 @@ class CustomNode {
 
   // 审批节点
   registerApproval() {
-    this.lf.register('approval', ({ RectNode, RectNodeModel }) => {
+    this.lf.register('approval', ({ RectNode, RectNodeModel, h }) => {
       class View extends RectNode {
         getAttributes() {
           const attrs: any = super.getAttributes();
           const { properties } = attrs;
           if (properties.configured) attrs.stroke = '#434c56';
           return attrs;
+        }
+        getShape() {
+          const attrs = this.getAttributes();
+          const style = {
+            x: attrs.x - attrs.width / 2,
+            y: attrs.y - attrs.height / 2,
+            rx: attrs.radius,
+            ry: attrs.radius
+          };
+          const newAttrs = Object.assign({}, attrs, style);
+          return h('rect', { ...newAttrs });
         }
       }
       class Model extends RectNodeModel {}

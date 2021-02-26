@@ -25,20 +25,7 @@
 export default {
   name: 'HoverCardApply',
   props: {
-    nodeData: {
-      type: Object,
-      default: function () {
-        return {
-          properties: {
-            name: '',
-            id: '',
-            type: '',
-            count: 0,
-            time: ''
-          }
-        };
-      }
-    }
+    nodeData: Object
   }
 };
 </script>

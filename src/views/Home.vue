@@ -7,11 +7,10 @@
     </div>
     <HoverCard
       :show="showHoverCard"
-      :nodeData="hoverNodeData"
-      :x="hoverPosition.x"
-      :y="hoverPosition.y"
+      :x="hoverCardPosition.x"
+      :y="hoverCardPosition.y"
     />
-    <Workbench :show="showWorkbench" :nodeData="nodeData" />
+    <Workbench :show="showWorkbench" />
   </div>
 </template>
 
@@ -41,9 +40,7 @@ export default {
     return {
       showHoverCard: false,
       showWorkbench: false,
-      nodeData: {},
-      hoverNodeData: {},
-      hoverPosition: {
+      hoverCardPosition: {
         x: 0,
         y: 0
       }
@@ -57,7 +54,11 @@ export default {
     this.lf.render(renderData);
   },
   methods: {
-    ...mapMutations(['initLogicFlow']),
+    ...mapMutations([
+      'initLogicFlow',
+      'updateHoverNodeData',
+      'updateWorkbenchNodeData'
+    ]),
     startDrag(config) {
       const { lf } = this.$store.state;
       lf.dnd.startDrag(config);
@@ -66,9 +67,9 @@ export default {
       this.lf.on('node:mouseenter', ({ data, e }) => {
         const { properties } = data;
         if (!properties.configured) return;
+        this.updateHoverNodeData(data);
         this.showHoverCard = true;
-        this.hoverNodeData = data;
-        this.hoverPosition = {
+        this.hoverCardPosition = {
           x: e.x,
           y: e.y
         };
@@ -80,7 +81,7 @@ export default {
         this.showHoverCard = false;
       });
       this.lf.on('node:click', ({ data }) => {
-        this.nodeData = data;
+        this.updateWorkbenchNodeData(data);
         this.showWorkbench = true;
       });
       this.lf.on('blank:click', () => {

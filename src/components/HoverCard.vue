@@ -8,18 +8,22 @@
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <div class="title">进度详情</div>
+    <div class="title">配置详情</div>
     <div class="main">
-      <HoverCardApply v-if="nodeData.type === 'apply'" :nodeData="nodeData" />
+      <HoverCardApply
+        v-if="hoverNodeData?.type === 'apply'"
+        :nodeData="hoverNodeData"
+      />
       <HoverCardApproval
-        v-if="nodeData.type === 'approval'"
-        :nodeData="nodeData"
+        v-if="hoverNodeData?.type === 'approval'"
+        :nodeData="hoverNodeData"
       />
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import HoverCardApply from './HoverCardApply.vue';
 import HoverCardApproval from './HoverCardApproval.vue';
 
@@ -38,8 +42,7 @@ export default {
     y: {
       type: Number,
       default: 0
-    },
-    nodeData: Object
+    }
   },
   data() {
     return {
@@ -47,6 +50,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['hoverNodeData']),
     showCard() {
       if (this.show) return true;
       else if (this.hover) return true;

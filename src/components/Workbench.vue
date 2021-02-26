@@ -1,23 +1,32 @@
 <template>
-  <div class="workbench" :class="{ 'show-workbench': show }">
+  <div
+    class="workbench"
+    :class="{
+      'show-workbench':
+        show && workbenchNodeData?.properties?.needConfig !== false
+    }"
+  >
     <h3 class="title">配置工作台</h3>
     <div class="main">
       <div class="item">
         <div class="label">节点类型：</div>
         <div class="content">
-          {{ nodeData.properties?.nodeType + `（${nodeData.type}）` }}
+          {{
+            workbenchNodeData?.properties?.nodeType +
+            `（${workbenchNodeData?.type}）`
+          }}
         </div>
       </div>
       <WorkbenchApply
-        v-if="nodeData.type === 'apply'"
+        v-if="workbenchNodeData?.type === 'apply'"
         :selectBlur="show"
-        :applicantIndex="nodeData.properties.applicantIndex"
+        :applicantIndex="workbenchNodeData?.properties?.applicantIndex"
         @change="handleChange"
       />
       <WorkbenchApproval
-        v-if="nodeData.type === 'approval'"
+        v-if="workbenchNodeData?.type === 'approval'"
         :selectBlur="show"
-        :managerIndex="nodeData.properties.managerIndex"
+        :managerIndex="workbenchNodeData?.properties?.managerIndex"
         @change="handleChange"
       />
       <el-button type="primary" @click="handleSubmit">完成</el-button>
@@ -39,34 +48,49 @@ export default {
     show: {
       type: Boolean,
       default: false
-    },
-    nodeData: Object
+    }
   },
   data() {
     return {
-      mockDataIndex: -1
+      applicantIndex: -1,
+      managerIndex: -1
     };
   },
-  computed: mapState(['lf']),
+  computed: mapState(['lf', 'workbenchNodeData']),
   methods: {
     handleChange($event) {
-      this.mockDataIndex = $event;
+      switch (this.workbenchNodeData.type) {
+        case 'apply':
+          this.applicantIndex = $event;
+          break;
+        case 'approval':
+          this.managerIndex = $event;
+          break;
+        default:
+          break;
+      }
+      this.applicantIndex = $event;
     },
     handleSubmit() {
-      if (this.mockDataIndex < 0) ElMessage.warning('请选择一组申请示例！');
       let newProperties;
-      if (this.nodeData.type === 'apply') {
+      if (this.workbenchNodeData.type === 'apply' && this.applicantIndex >= 0) {
         newProperties = {
-          ...mockData.applicants[this.mockDataIndex]
+          ...mockData.applicants[this.applicantIndex]
         };
-      } else if (this.nodeData.type === 'approval') {
+      } else if (
+        this.workbenchNodeData.type === 'approval' &&
+        this.managerIndex >= 0
+      ) {
         newProperties = {
-          ...mockData.managers[this.mockDataIndex]
+          ...mockData.managers[this.managerIndex]
         };
+      } else {
+        ElMessage.warning('请选择一组申请示例！');
+        return;
       }
-      this.lf.setProperties(this.nodeData.id, {
+      this.lf.setProperties(this.workbenchNodeData.id, {
         configured: true,
-        ...this.nodeData.properties,
+        ...this.workbenchNodeData.properties,
         ...newProperties
       });
       ElMessage.success('配置成功！');
